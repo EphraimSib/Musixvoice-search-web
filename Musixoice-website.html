@@ -1,0 +1,405 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusixVoice</title>
+    <style>
+        /* styles remain the same */ 
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #128ee13c; /* Purple background */
+            color: #000000; /* Black text color */
+        }
+        
+        header {
+            background-color: #0062eb; /* Darker purple background */
+            color: #000000;
+            padding: 1em;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        header img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        nav li {
+            margin-right: 20px;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2em;
+        }
+        
+        section {
+            background-color: #fff;
+            padding: 2em;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            background-color: #6c5ce7; /* Darker purple background */
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+            clear: both;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+       .music-artwork {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+       .music-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+       .music-info h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+       .music-info p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+       .download-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+       .download-button:hover {
+            background-color: #3e8e41;
+        }
+        
+        #login-prompt {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="favicon.jpg" alt="MusixVoice Logo">
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#download">Download the app</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <!-- main content remains the same -->
+        <section id="welcome">
+            <h1>Welcome to MusixVoice</h1>
+            <p>MusixVoice is a revolutionary music recognition app that uses AI to identify songs from voice messages.</p>
+        </section>
+        <section id="about" style="display: none;">
+            <h1>About MusixVoice</h1>
+            <p>MusixVoice is a revolutionary music recognition app that uses AI to identify songs from voice messages.</p>
+        </section>
+        <section id="features" style="display: none;">
+            <h1>Features</h1>
+            <ul>
+                <li>Recognize songs from voice messages</li>
+                <li>Search for songs on Spotify</li>
+                <li>Download songs directly to your device</li>
+            </ul>
+        </section>
+        <section id="download" style="display: none;">
+            <h1>Download MusixVoice</h1>
+            <ul>
+                <li>Musixvoice is comming soon on apple store and play store</li>
+            </section>
+            <section id="music-recognition">
+                <h1>Recognize Music</h1>
+                <p>Speak the name of a song, and MusixVoice will try to identify it!</p>
+                <input type="text" id="song-input" placeholder="Speak the name of a song...">
+                <button id="record-button">Record</button>
+                <div id="login-prompt">
+                    <p>Please log in with Facebook or Google to proceed:</p>
+                    <button id="facebook-auth-button">Login with Facebook</button>
+                    <button id="google-auth-button">Login with Google</button>
+                </div>
+                <button id="facebook-auth-button" style="display: none;">Login with Facebook</button>
+                <button id="google-auth-button" style="display: none;">Login with Google</button>
+                <div id="music-info">
+                    <img src="" alt="Music Artwork" class="music-artwork">
+                    <h2 id="song-title"></h2>
+                    <p id="artist-name"></p>
+                    <button class="download-button">Download</button>
+                </div>
+            </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 MusixVoice</p>
+    </footer>
+    <script src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <script src="https://apis.google.com/js/api:client.js"></script>
+    <script>
+        // Add event listeners to navigation links
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', event => {
+                event.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.style.display = 'block';
+                document.querySelectorAll('section').forEach(section => {
+                    if (section !== target) {
+                        section.style.display = 'none'; }
+            });
+        });
+    });
+        
+
+        // Add event listener to home icon
+        document.querySelector('header img').addEventListener('click', () => {
+            try {
+                // Navigate to home page
+                document.getElementById('welcome').style.display = 'block';
+                document.getElementById('music-recognition').style.display = 'block';
+                document.querySelectorAll('section').forEach(section => {
+                    if (section !== document.getElementById('welcome') && section !== document.getElementById('music-recognition')) {
+                        section.style.display = 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('Error navigating to home page:', error);
+            }
+        });
+
+        // Add event listener to record button
+        document.getElementById('record-button').addEventListener('click', async () => {
+            if (!isUserLoggedIn()) {
+                // User is not logged in, show login prompt
+                document.getElementById('login-prompt').style.display = 'block';
+            } else {
+                // User is logged in, proceed to record and recognize song
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const audioRecorder = new MediaRecorder(stream);
+                    audioRecorder.start();
+
+                    // Set up the recording timer
+                    setTimeout(() => {
+                        // Stop recording after 10 seconds
+                        audioRecorder.stop();
+                        const recordedAudio = new Blob([audioRecorder.recordedBlobs[0]], { type: 'audio/wav' });
+
+                        // Make an AJAX request to the server to upload and process the audio file
+                        fetch('/upload_audio', {
+                            method: 'POST',
+                            body: recordedAudio
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Song recognition result:', data);
+                            // Update the UI with the song information
+                            const songTitle = data.songTitle;
+                            const artistName = data.artistName;
+
+                            // Search for the song on Spotify
+                            searchSongOnSpotify(songTitle, artistName);
+                        })
+                        .catch(error => console.error('Error uploading audio:', error));
+                    }, 10000);
+                } catch (error) {
+                    console.error('Error recording audio:', error);
+                }
+            }
+        });
+
+        // Add event listener to Facebook authentication button
+        document.getElementById('facebook-auth-button').addEventListener('click', () => {
+            // Initialize Facebook authentication
+            FB.init({
+                appId: '488130147010465',
+                cookie: true,
+                xfbml: true,
+                version: 'v15.0' // updated to latest version
+            });
+
+            // Login with Facebook
+            FB.login(response => {
+                if (response.authResponse) {
+                    // User is logged in, hide login prompt and proceed to record
+                    document.getElementById('login-prompt').style.display = 'none';
+                    recordAndRecognizeSong();
+                } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                }
+            }, { scope: 'public_profile,email' });
+        });
+
+        // Add event listener to Google authentication button
+        document.getElementById('google-auth-button').addEventListener('click', () => {
+            // Initialize Google authentication
+            gapi.load('auth2', () => {
+                gapi.auth2.init({
+                    client_id: '677617571927',
+                    scope: 'profile email'
+                });
+
+                // Login with Google
+                gapi.auth2.getAuthInstance().signIn().then(() => {
+                    // User is logged in, hide login prompt and proceed to record
+                    document.getElementById('login-prompt').style.display = 'none';
+                    recordAndRecognizeSong();
+                }, error => {
+                    console.log('Error logging in with Google:', error);
+                });
+            });
+        });
+
+        // Move the record and recognize song functionality to a separate function
+        function recordAndRecognizeSong() {
+            // Record audio from microphone
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                const audioRecorder = new MediaRecorder(stream);
+                audioRecorder.start();
+
+                // Record audio for 10 seconds
+                setTimeout(() => {
+                    audioRecorder.stop();
+                    const recordedAudio = new Blob([audioRecorder.recordedBlobs[0]], { type: 'audio/wav' });
+
+                    // Make an AJAX request to the server to upload and process the audio file
+                    fetch('/upload_audio', {
+                        method: 'POST',
+                        body: recordedAudio
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Song recognition result:', data);
+                        // Update the UI with the song information
+                        const songTitle = data.songTitle;
+                        const artistName = data.artistName;
+
+                        // Search for the song on Spotify
+                        searchSongOnSpotify(songTitle, artistName);
+                    })
+                    .catch(error => console.error('Error uploading audio:', error));
+                }, 10000);
+            })
+            .catch(error => console.error('Error recording audio:', error ));    
+           }
+        
+    
+        // Check if user is logged in with Facebook or Google
+        function isUserLoggedIn() {
+            return FB.getAuthResponse() || gapi.auth2.getAuthInstance().isSignedIn.get();
+        }
+    
+        // Search for songs on Spotify
+        function searchSongOnSpotify(songTitle, artistName) {
+            const spotifyApiUrl = 'https://api.spotify.com/v1/search/tracks';
+            const apiKey = 'f82b3bb5008e449b83832ba241b30ef7';
+            const apiSecret = '0c87e84a36aa41079f0df8886bd9795b';
+    
+            // Set up the API request headers
+            const headers = new Headers({
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            });
+    
+            // Set up the API request parameters
+            const params = new URLSearchParams({
+                'q': `${songTitle} ${artistName}`,
+                'type': 'track'
+            });
+    
+            // Make the API request to search for songs
+            fetch(`${spotifyApiUrl}?${params}`, {
+                method: 'GET',
+                headers: headers
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Extract the first search result
+                const track = data.tracks.items[0];
+    
+                // Update the UI with the song information
+                document.getElementById('song-title').textContent = track.name;
+                document.getElementById('artist-name').textContent = track.artists[0].name;
+    
+                // Add a button to download the song
+                const downloadButton = document.createElement('button');
+                downloadButton.textContent = 'Download';
+                downloadButton.addEventListener('click', () => {
+                    // Make an API request to download the song
+                    fetch(`https://api.spotify.com/v1/tracks/${track.id}`, {
+                        method: 'GET',
+                        headers: headers
+                    })
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // Create a URL for the blob and download it
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${track.name}.mp3`;
+                        a.click();
+                    });
+                });
+    
+                // Add the download button to the UI
+                document.getElementById('music-info').appendChild(downloadButton);
+            })
+            .catch(error => console.error('Error searching for song on Spotify:', error));
+        }
+    </script>
+    </body>
+    </html>
